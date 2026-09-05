@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Lagos Vogue AI Sales Assistant — Demo</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#e9edef;font-family:Arial,sans-serif;color:#202124}
+.app{max-width:760px;margin:auto;min-height:100vh;background:#efe7de;display:flex;flex-direction:column}
+.header{background:#111;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:3}
+.avatar{width:42px;height:42px;border-radius:50%;background:#fff;color:#111;display:grid;place-items:center;font-weight:700}
+.header h1{font-size:16px;margin:0}.header p{font-size:11px;margin:3px 0 0;opacity:.7}
+.demo{background:#f8f1d8;color:#5b4b13;text-align:center;padding:7px;font-size:11px}
+.chat{padding:14px 12px 125px;flex:1}
+.row{display:flex;margin:8px 0}.row.user{justify-content:flex-end}.bubble{max-width:84%;padding:10px 12px;border-radius:12px;font-size:14px;line-height:1.42;box-shadow:0 1px 1px #0001;white-space:pre-wrap}.bot .bubble{background:#fff;border-top-left-radius:3px}.user .bubble{background:#d9fdd3;border-top-right-radius:3px}
+.time{font-size:9px;color:#777;text-align:right;margin-top:4px}
+.composer{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(760px,100%);background:#f0f2f5;padding:9px;display:flex;gap:7px;border-top:1px solid #ddd;z-index:4}
+.composer textarea{flex:1;resize:none;border:1px solid #ccd0d5;border-radius:20px;padding:11px 14px;font:14px Arial;min-height:44px;max-height:110px;outline:none}.composer button{border:0;border-radius:50%;width:46px;height:46px;background:#111;color:#fff;font-weight:700}
+.quick{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.quick button,.actions button{border:1px solid #bbb;background:#fff;border-radius:18px;padding:8px 11px;font-size:12px}
+.lead{background:#fff;border:1px solid #d8c77b;border-radius:12px;padding:14px;margin:16px 2px;box-shadow:0 2px 8px #0001}.lead h3{margin:0 0 10px;font-size:15px}.lead p{margin:6px 0;font-size:13px}.status{display:inline-block;padding:4px 8px;border-radius:12px;background:#ffe7a6;font-weight:700;font-size:11px}.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.actions button.primary{background:#111;color:#fff;border-color:#111}.sent{font-size:12px;color:#176b32;margin-top:8px;font-weight:700}
+.reset{margin:10px auto 4px;display:block;border:0;background:transparent;color:#555;text-decoration:underline;font-size:12px}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+<div class="avatar">LV</div><div><h1>Lagos Vogue AI Sales Assistant</h1><p>Online • Demo environment</p></div>
+</header>
+<div class="demo">FICTIONAL DEMO — no real inventory, payment or delivery confirmation</div>
+<main class="chat" id="chat"></main>
+<button class="reset" onclick="resetDemo()">Reset conversation</button>
+<div class="composer">
+<textarea id="input" rows="1" placeholder="Type a customer message…"></textarea>
+<button id="send" aria-label="Send">➤</button>
+</div>
+</div>
+<script>
+const catalog={
+native:{name:"Men’s Native Shirt & Trouser Set",price:50000,sizes:["M","L","XL","XXL"],colors:["Black","White","Navy","Brown"]},
+shirt:{name:"Smart Casual Men's Shirt",price:25000,sizes:["M","L","XL","XXL"],colors:["White","Black","Sky Blue","Wine"]}
+};
+let s={gender:null,product:null,size:null,color:null,budget:null,occasion:null,name:null,location:null,timeline:null,discount:null,leadSent:false};
+
+function add(text,who){
+ const row=document.createElement("div");row.className="row "+who;
+ const b=document.createElement("div");b.className="bubble";b.textContent=text;
+ const t=document.createElement("div");t.className="time";t.textContent=new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+ b.appendChild(t);row.appendChild(b);document.getElementById("chat").appendChild(row);
+ window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+}
+function quick(items){
+ const box=document.createElement("div");box.className="quick";
+ items.forEach(x=>{const b=document.createElement("button");b.textContent=x;b.onclick=()=>send(x);box.appendChild(b)});
+ document.getElementById("chat").appendChild(box);
+}
+function send(text){
+ text=(text||"").trim();if(!text)return;
+ add(text,"user");document.getElementById("input").value="";route(text);
+}
+function route(raw){
+ const t=raw.toLowerCase();
+ if(!s.gender){
+  if(t.includes("men")||t.includes("man")||t.includes("male"))s.gender="men";
+  else if(t.includes("women")||t.includes("woman")||t.includes("female"))s.gender="women";
+  else {add("Absolutely 😊 Is the outfit for a man or a woman?","bot");quick(["Man","Woman"]);return;}
+ }
+ if(s.gender==="women"){
+  add("I can help with women's options too. For this demo, tell me your preferred occasion and budget, and I'll guide you from the catalogue.","bot");return;
+ }
+ if(!s.product){
+  s.budget=(t.match(/₦\s?([\d,]+)/)||[])[1]?parseInt((t.match(/₦\s?([\d,]+)/)||[])[1].replace(/,/g,"")):50000;
+  s.occasion=t.includes("wedding")?"Wedding":"Special occasion";
+  s.product=catalog.native;
+  add("For a men's wedding outfit around ₦"+s.budget.toLocaleString()+", the "+s.product.name+" is listed at ₦50,000.\n\nThe catalogue does not contain live stock information, so the boutique team must confirm availability.\n\nWhat size do you normally wear?","bot");quick(["M","L","XL","XXL"]);return;
+ }
+ if(!s.size){
+  const size=["m","l","xl","xxl"].find(x=>new RegExp("\\b"+x+"\\b","i").test(t));
+  if(size){s.size=size.toUpperCase();add("Noted 👍🏽. What colour would you prefer?","bot");quick(s.product.colors);return;}
+  add("Please choose your usual size: M, L, XL or XXL.","bot");quick(["M","L","XL","XXL"]);return;
+ }
+ if(!s.color){
+  const c=s.product.colors.find(x=>t.includes(x.toLowerCase()));
+  if(c){s.color=c;add("Great choice. What is your name and location? For example: Denis, Taraba.","bot");return;}
+  add("Which colour would you prefer?","bot");quick(s.product.colors);return;
+ }
+ if(!s.name){
+  const parts=raw.split(",");
+  if(parts.length>=2){s.name=parts[0].trim();s.location=parts.slice(1).join(",").trim();askTimeline();return;}
+  add("Please send your name and location, for example: Denis, Taraba.","bot");return;
+ }
+ if(!s.timeline){
+  s.timeline=(t.includes("today")||t.includes("asap")||t.includes("soon"))?"ASAP":raw;
+  add("Thanks, "+s.name+" 😊. Would you like me to pass this request to the boutique team for confirmation?","bot");quick(["Yes, pass it to the team","Not yet"]);return;
+ }
+ if(t.includes("yes")||t.includes("pass")||t.includes("send")){
+  showLead();
+ } else {
+  add("No problem. I won't send it yet. You can continue asking questions, or tap 'Pass lead to boutique' when you're ready.","bot");
+ }
+}
+function askTimeline(){add("Thanks 😊. When are you hoping to buy it?","bot");quick(["As soon as possible","This week","Just comparing"]);}
+
+function showLead(){
+ if(document.getElementById("lead"))return;
+ add("Perfect 😊 I've captured the request. The boutique team will need to confirm the XL availability, any discount, delivery to your location and the approved payment details.","bot");
+ const lead=document.createElement("section");lead.className="lead";lead.id="lead";
+ lead.innerHTML=`<h3>🔔 INTERNAL SALES LEAD</h3>
+ <p><span class="status">HOT LEAD</span></p>
+ <p><b>Customer:</b> ${esc(s.name)}</p>
+ <p><b>Product:</b> ${esc(s.product.name)}</p>
+ <p><b>Size:</b> ${esc(s.size)}</p>
+ <p><b>Colour:</b> ${esc(s.color)}</p>
+ <p><b>Budget:</b> ₦${Number(s.budget||50000).toLocaleString()}</p>
+ <p><b>Occasion:</b> ${esc(s.occasion)}</p>
+ <p><b>Location:</b> ${esc(s.location)}</p>
+ <p><b>Timeline:</b> ${esc(s.timeline)}</p>
+ <p><b>Intent:</b> Ready to purchase / confirmation required</p>
+ <p><b>Recommended action:</b> Confirm stock, negotiate/approve discount if applicable, confirm delivery and send approved payment details.</p>
+ <div class="actions"><button class="primary" onclick="sendLead()">📩 Send Lead to Boutique</button><button onclick="copyLead()">Copy Lead</button></div>
+ <div id="leadStatus"></div>
+ <p style="font-size:10px;color:#777;margin-top:12px">DEMO ONLY — this button simulates sending. No real message is sent.</p>`;
+ document.getElementById("chat").appendChild(lead);window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+}
+function sendLead(){
+ s.leadSent=true;document.getElementById("leadStatus").innerHTML='<div class="sent">✓ Lead sent to boutique team (simulated demo action)</div>';
+}
+function copyLead(){
+ const txt=`NEW SALES LEAD\nCustomer: ${s.name}\nProduct: ${s.product.name}\nSize: ${s.size}\nColour: ${s.color}\nBudget: ₦${Number(s.budget||50000).toLocaleString()}\nOccasion: ${s.occasion}\nLocation: ${s.location}\nTimeline: ${s.timeline}\nAction: Confirm stock, discount, delivery and approved payment details.`;
+ navigator.clipboard?.writeText(txt);document.getElementById("leadStatus").innerHTML='<div class="sent">✓ Lead copied (if clipboard permission was granted)</div>';
+}
+function esc(x){return String(x||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
+function resetDemo(){s={gender:null,product:null,size:null,color:null,budget:null,occasion:null,name:null,location:null,timeline:null,discount:null,leadSent:false};document.getElementById("chat").innerHTML="";add("Hello 😊 Welcome to Lagos Vogue. I can help you find an outfit, answer catalogue questions and collect your request for our boutique team. What are you shopping for?","bot");}
+document.getElementById("send").onclick=()=>send(document.getElementById("input").value);
+document.getElementById("input").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send(e.target.value)}});
+resetDemo();
+</script>
+</body>
+</html>
