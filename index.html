@@ -1455,25 +1455,48 @@
   /* =========================================
      SEND LEAD — DEMO PLACEHOLDER
   ========================================= */
+async function sendLead() {
 
-  function sendLead() {
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw2EaANO5CXb-Tw7YuSOEi2_BqRbnJAkqP79-BvRivzTDbuQ0sVHDC9PYGY9EwY58cO2A/exec";
 
-    /*
-      STEP 3 WILL REPLACE THIS FUNCTION.
+  try {
 
-      We will connect this button to a real
-      webhook so qualified leads can automatically
-      reach the boutique by email / Google Sheets
-      / WhatsApp infrastructure.
-    */
+    const response = await fetch(WEB_APP_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(lead)
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+
+      alert(
+        "✅ Lead sent successfully!\n\n" +
+        "Lagos Vogue can now follow up with this customer."
+      );
+
+    } else {
+
+      alert(
+        "⚠️ Lead could not be sent.\n\n" +
+        result.error
+      );
+
+    }
+
+  } catch (error) {
 
     alert(
-      "Demo lead captured successfully.\n\n" +
-      "The next upgrade will connect this button " +
-      "to real lead delivery."
+      "❌ Connection error.\n\n" +
+      "Please try again."
     );
 
   }
+
+}
 
 </script>
 
