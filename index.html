@@ -1,892 +1,1479 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Lagos Vogue AI Sales Assistant</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111111">
+  <meta name="description" content="Lagos Vogue AI Sales Assistant — an intelligent fashion boutique sales experience.">
 
-<style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  background:#e9edef;
-  font-family:Arial,sans-serif;
-  color:#202124
-}
-.app{
-  max-width:760px;
-  margin:auto;
-  min-height:100vh;
-  background:#efe7de;
-  display:flex;
-  flex-direction:column
-}
-.header{
-  background:#111;
-  color:#fff;
-  padding:14px 16px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  position:sticky;
-  top:0;
-  z-index:3
-}
-.avatar{
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  background:#fff;
-  color:#111;
-  display:grid;
-  place-items:center;
-  font-weight:700
-}
-.header h1{
-  font-size:16px;
-  margin:0
-}
-.header p{
-  font-size:11px;
-  margin:3px 0 0;
-  opacity:.7
-}
-.demo{
-  background:#f8f1d8;
-  color:#5b4b13;
-  text-align:center;
-  padding:7px;
-  font-size:11px
-}
-.chat{
-  padding:14px 12px 145px;
-  flex:1
-}
-.row{
-  display:flex;
-  margin:8px 0
-}
-.row.user{
-  justify-content:flex-end
-}
-.bubble{
-  max-width:84%;
-  padding:10px 12px;
-  border-radius:12px;
-  font-size:14px;
-  line-height:1.42;
-  box-shadow:0 1px 1px #0001;
-  white-space:pre-wrap
-}
-.bot .bubble{
-  background:#fff;
-  border-top-left-radius:3px
-}
-.user .bubble{
-  background:#d9fdd3;
-  border-top-right-radius:3px
-}
-.time{
-  font-size:9px;
-  color:#777;
-  text-align:right;
-  margin-top:4px
-}
-.quick{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-  margin:8px 0
-}
-.quick button,
-.actions button{
-  border:1px solid #bbb;
-  background:#fff;
-  border-radius:18px;
-  padding:8px 11px;
-  font-size:12px;
-  cursor:pointer
-}
-.quick button:hover,
-.actions button:hover{
-  background:#f1f1f1
-}
-.composer{
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:min(760px,100%);
-  background:#f0f2f5;
-  padding:9px;
-  display:flex;
-  gap:7px;
-  border-top:1px solid #ddd;
-  z-index:4
-}
-.composer textarea{
-  flex:1;
-  resize:none;
-  border:1px solid #ccd0d5;
-  border-radius:20px;
-  padding:11px 14px;
-  font:14px Arial;
-  min-height:44px;
-  max-height:110px;
-  outline:none
-}
-.composer button{
-  border:0;
-  border-radius:50%;
-  width:46px;
-  height:46px;
-  background:#111;
-  color:#fff;
-  font-weight:700;
-  cursor:pointer
-}
-.reset{
-  margin:10px auto 4px;
-  display:block;
-  border:0;
-  background:transparent;
-  color:#555;
-  text-decoration:underline;
-  font-size:12px;
-  cursor:pointer
-}
-.lead{
-  background:#fff;
-  border:1px solid #d8c77b;
-  border-radius:12px;
-  padding:14px;
-  margin:16px 2px;
-  box-shadow:0 2px 8px #0001
-}
-.lead h3{
-  margin:0 0 10px;
-  font-size:15px
-}
-.lead p{
-  margin:6px 0;
-  font-size:13px
-}
-.status{
-  display:inline-block;
-  padding:4px 8px;
-  border-radius:12px;
-  background:#ffe7a6;
-  font-weight:700;
-  font-size:11px
-}
-.actions{
-  display:flex;
-  gap:8px;
-  margin-top:12px;
-  flex-wrap:wrap
-}
-.actions button.primary{
-  background:#111;
-  color:#fff;
-  border-color:#111
-}
-.sent{
-  font-size:12px;
-  color:#176b32;
-  margin-top:8px;
-  font-weight:700
-}
-.typing{
-  display:inline-block;
-  padding:9px 12px;
-  background:#fff;
-  border-radius:12px;
-  color:#777;
-  font-size:13px
-}
-.card{
-  background:#fff;
-  border-radius:14px;
-  padding:14px;
-  margin:12px 2px;
-  box-shadow:0 2px 8px #0001
-}
-.card h3{
-  margin:0 0 8px;
-  font-size:15px
-}
-.card p{
-  margin:5px 0;
-  font-size:12px;
-  color:#555
-}
-.price{
-  font-weight:700;
-  color:#111
-}
-</style>
+  <title>Lagos Vogue | AI Sales Assistant</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --black: #111111;
+      --dark: #1b1b1b;
+      --gold: #c9a227;
+      --gold-light: #e6c85c;
+      --cream: #faf8f2;
+      --white: #ffffff;
+      --muted: #777777;
+      --border: #e8e3d8;
+      --success: #16834b;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f3f1ec;
+      color: var(--black);
+      min-height: 100vh;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ================= HEADER ================= */
+
+    .topbar {
+      background: var(--black);
+      color: white;
+      padding: 18px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 3px 15px rgba(0,0,0,.15);
+    }
+
+    .topbar-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold-light);
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .brand-name {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+    }
+
+    .brand-sub {
+      font-size: 10px;
+      color: #bdbdbd;
+      letter-spacing: 2px;
+      margin-top: 3px;
+      text-transform: uppercase;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: #d8d8d8;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2bd477;
+      box-shadow: 0 0 8px rgba(43,212,119,.7);
+    }
+
+    /* ================= HERO ================= */
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(17,17,17,.98), rgba(45,39,23,.95));
+      color: white;
+      padding: 45px 20px 50px;
+    }
+
+    .hero-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      color: var(--gold-light);
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
+
+    .hero h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(34px, 6vw, 58px);
+      line-height: 1.05;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 span {
+      color: var(--gold-light);
+    }
+
+    .hero p {
+      color: #d8d8d8;
+      line-height: 1.7;
+      max-width: 620px;
+      font-size: 15px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .badge {
+      border: 1px solid rgba(230,200,92,.4);
+      color: #eee;
+      padding: 9px 13px;
+      border-radius: 30px;
+      font-size: 12px;
+      background: rgba(255,255,255,.04);
+    }
+
+    .hero-card {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px;
+      padding: 25px;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-card-title {
+      color: var(--gold-light);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+    }
+
+    .hero-stat {
+      font-family: Georgia, serif;
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    .hero-small {
+      color: #bbb;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    /* ================= MAIN ================= */
+
+    .main {
+      width: 100%;
+      max-width: 1100px;
+      margin: -25px auto 0;
+      padding: 0 15px 50px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: 0 10px 35px rgba(0,0,0,.08);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-title {
+      font-family: Georgia, serif;
+      font-size: 21px;
+      margin-bottom: 6px;
+    }
+
+    .panel-description {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* ================= PRODUCTS ================= */
+
+    .products {
+      padding: 15px;
+    }
+
+    .product {
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      overflow: hidden;
+      margin-bottom: 14px;
+      transition: .2s ease;
+      background: #fff;
+    }
+
+    .product:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,.08);
+    }
+
+    .product:last-child {
+      margin-bottom: 0;
+    }
+
+    .product-visual {
+      height: 145px;
+      background:
+        linear-gradient(135deg, #171717, #50472c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold-light);
+      font-family: Georgia, serif;
+      font-size: 34px;
+      letter-spacing: 2px;
+    }
+
+    .product:nth-child(2) .product-visual {
+      background: linear-gradient(135deg, #ececec, #b8b8b8);
+      color: #333;
+    }
+
+    .product-content {
+      padding: 17px;
+    }
+
+    .product-name {
+      font-family: Georgia, serif;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .price {
+      color: #9b7810;
+      font-weight: bold;
+      font-size: 17px;
+      margin-bottom: 12px;
+    }
+
+    .product-info {
+      color: #707070;
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    .product-info strong {
+      color: #333;
+    }
+
+    .product-button {
+      width: 100%;
+      border: none;
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 9px;
+      background: var(--black);
+      color: white;
+      font-weight: bold;
+      transition: .2s;
+    }
+
+    .product-button:hover {
+      background: #2d2d2d;
+    }
+
+    /* ================= CHAT ================= */
+
+    .chat {
+      display: flex;
+      flex-direction: column;
+      min-height: 650px;
+    }
+
+    .chat-header {
+      padding: 17px 20px;
+      background: var(--cream);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .assistant-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--black);
+      color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border: 2px solid var(--gold);
+    }
+
+    .assistant-name {
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .assistant-status {
+      font-size: 11px;
+      color: var(--success);
+      margin-top: 3px;
+    }
+
+    .messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      max-height: 520px;
+      background: #fff;
+    }
+
+    .message-row {
+      display: flex;
+      margin-bottom: 15px;
+    }
+
+    .message-row.user {
+      justify-content: flex-end;
+    }
+
+    .message {
+      max-width: 85%;
+      padding: 12px 14px;
+      border-radius: 15px;
+      font-size: 13px;
+      line-height: 1.55;
+      white-space: pre-line;
+    }
+
+    .message.bot {
+      background: #f1efe9;
+      color: #222;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.user {
+      background: var(--black);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message strong {
+      color: #9b7810;
+    }
+
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 20px 12px;
+      background: white;
+    }
+
+    .quick {
+      border: 1px solid #d9d4c9;
+      background: white;
+      border-radius: 20px;
+      padding: 8px 12px;
+      font-size: 11px;
+      color: #333;
+    }
+
+    .quick:hover {
+      border-color: var(--gold);
+      color: #80650c;
+    }
+
+    .composer {
+      border-top: 1px solid var(--border);
+      padding: 12px;
+      display: flex;
+      gap: 9px;
+      background: white;
+    }
+
+    .composer input {
+      flex: 1;
+      border: 1px solid #ddd8cf;
+      border-radius: 25px;
+      padding: 12px 15px;
+      outline: none;
+      min-width: 0;
+    }
+
+    .composer input:focus {
+      border-color: var(--gold);
+    }
+
+    .send {
+      width: 45px;
+      height: 45px;
+      border: none;
+      border-radius: 50%;
+      background: var(--black);
+      color: white;
+      font-size: 17px;
+    }
+
+    /* ================= LEAD CARD ================= */
+
+    .lead-card {
+      display: none;
+      margin: 15px 20px 5px;
+      padding: 17px;
+      border: 1px solid #d9c77e;
+      border-radius: 15px;
+      background: #fffdf4;
+    }
+
+    .lead-card.show {
+      display: block;
+    }
+
+    .lead-title {
+      font-family: Georgia, serif;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .lead-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      font-size: 11px;
+      color: #555;
+    }
+
+    .lead-grid div {
+      padding: 8px;
+      background: white;
+      border-radius: 7px;
+    }
+
+    .lead-grid strong {
+      display: block;
+      color: #222;
+      margin-bottom: 3px;
+    }
+
+    .lead-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .lead-action {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: var(--black);
+      color: white;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .lead-action.secondary {
+      background: #eee9df;
+      color: #222;
+    }
+
+    /* ================= TRUST ================= */
+
+    .trust {
+      max-width: 1100px;
+      margin: 25px auto 0;
+      padding: 0 15px 50px;
+    }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .trust-item {
+      background: white;
+      padding: 18px;
+      border-radius: 14px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,.04);
+    }
+
+    .trust-icon {
+      font-size: 23px;
+      margin-bottom: 8px;
+    }
+
+    .trust-item strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .trust-item span {
+      color: #777;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    /* ================= FOOTER ================= */
+
+    footer {
+      background: var(--black);
+      color: #aaa;
+      text-align: center;
+      padding: 25px 15px;
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    footer strong {
+      color: var(--gold-light);
+    }
+
+    /* ================= TYPING ================= */
+
+    .typing {
+      display: none;
+      align-items: center;
+      gap: 4px;
+      background: #f1efe9;
+      width: fit-content;
+      padding: 11px 14px;
+      border-radius: 15px;
+      margin-bottom: 15px;
+    }
+
+    .typing.show {
+      display: flex;
+    }
+
+    .typing span {
+      width: 5px;
+      height: 5px;
+      background: #777;
+      border-radius: 50%;
+      animation: bounce 1s infinite;
+    }
+
+    .typing span:nth-child(2) {
+      animation-delay: .15s;
+    }
+
+    .typing span:nth-child(3) {
+      animation-delay: .3s;
+    }
+
+    @keyframes bounce {
+      0%, 60%, 100% {
+        transform: translateY(0);
+      }
+      30% {
+        transform: translateY(-5px);
+      }
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 800px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card {
+        display: none;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .chat {
+        min-height: 620px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .topbar {
+        padding: 14px;
+      }
+
+      .brand-name {
+        font-size: 16px;
+      }
+
+      .status {
+        font-size: 10px;
+      }
+
+      .hero {
+        padding: 35px 18px 45px;
+      }
+
+      .hero h1 {
+        font-size: 38px;
+      }
+
+      .main {
+        padding: 0 10px 35px;
+      }
+
+      .trust-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .lead-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .messages {
+        padding: 15px;
+      }
+
+      .quick-actions {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
 <div class="app">
 
-<header class="header">
-  <div class="avatar">LV</div>
-  <div>
-    <h1>Lagos Vogue AI Sales Assistant</h1>
-    <p>Online • AI-powered fashion sales demo</p>
-  </div>
-</header>
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="topbar-inner">
+
+      <div class="brand">
+        <div class="brand-mark">LV</div>
+        <div>
+          <div class="brand-name">LAGOS VOGUE</div>
+          <div class="brand-sub">Fashion • Lagos</div>
+        </div>
+      </div>
+
+      <div class="status">
+        <span class="status-dot"></span>
+        AI Assistant Online
+      </div>
 
-<div class="demo">
-  DEMO ENVIRONMENT — inventory, delivery and payment require team confirmation
-</div>
+    </div>
+  </header>
 
-<main class="chat" id="chat"></main>
 
-<button class="reset" onclick="resetDemo()">Reset conversation</button>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
 
-<div class="composer">
-  <textarea id="input" rows="1" placeholder="Type a customer message…"></textarea>
-  <button id="send" aria-label="Send">➤</button>
-</div>
+      <div>
+        <div class="eyebrow">The future of boutique sales</div>
 
-</div>
+        <h1>
+          Meet your<br>
+          <span>AI Fashion</span><br>
+          Sales Assistant.
+        </h1>
+
+        <p>
+          A smarter way for fashion businesses to engage customers,
+          recommend products, qualify serious buyers and capture sales
+          opportunities — even when the boutique team is busy.
+        </p>
+
+        <div class="hero-badges">
+          <span class="badge">24/7 Enquiries</span>
+          <span class="badge">Lead Qualification</span>
+          <span class="badge">Mobile Friendly</span>
+        </div>
+      </div>
 
-<script>
+      <div class="hero-card">
+        <div class="hero-card-title">Sales intelligence</div>
+        <div class="hero-stat">More than a chatbot.</div>
+        <div class="hero-small">
+          The assistant asks the right questions, understands the
+          customer's shopping intent and prepares a structured sales
+          lead for the boutique.
+        </div>
+      </div>
 
-const catalog = {
-  native:{
-    name:"Men’s Native Shirt & Trouser Set",
-    price:50000,
-    sizes:["M","L","XL","XXL"],
-    colors:["Black","White","Navy","Brown"],
-    description:"A smart native two-piece suitable for weddings, events and special occasions."
-  },
+    </div>
+  </section>
 
-  shirt:{
-    name:"Smart Casual Men's Shirt",
-    price:25000,
-    sizes:["M","L","XL","XXL"],
-    colors:["White","Black","Sky Blue","Wine"],
-    description:"A clean smart-casual shirt suitable for work, outings and social occasions."
-  }
-};
 
-let s = {
-  gender:null,
-  product:null,
-  size:null,
-  color:null,
-  budget:null,
-  occasion:null,
-  name:null,
-  location:null,
-  timeline:null,
-  leadSent:false
-};
+  <!-- MAIN -->
+  <main class="main">
 
-function add(text,who){
+    <div class="layout">
 
-  const row=document.createElement("div");
-  row.className="row "+who;
+      <!-- PRODUCTS -->
+      <section class="panel">
 
-  const b=document.createElement("div");
-  b.className="bubble";
+        <div class="panel-header">
+          <div class="panel-title">Featured Collection</div>
+          <div class="panel-description">
+            Explore selected Lagos Vogue pieces and ask the AI assistant
+            about your preferred style.
+          </div>
+        </div>
 
-  const message=document.createElement("span");
-  message.textContent=text;
+        <div class="products">
 
-  const t=document.createElement("div");
-  t.className="time";
-  t.textContent=new Date().toLocaleTimeString([],{
-    hour:"2-digit",
-    minute:"2-digit"
-  });
+          <article class="product">
 
-  b.appendChild(message);
-  b.appendChild(t);
-  row.appendChild(b);
+            <div class="product-visual">
+              LV
+            </div>
 
-  document.getElementById("chat").appendChild(row);
+            <div class="product-content">
 
-  window.scrollTo({
-    top:document.body.scrollHeight,
-    behavior:"smooth"
-  });
-}
+              <div class="product-name">
+                Men's Native Shirt & Trouser Set
+              </div>
 
-function quick(items){
+              <div class="price">
+                ₦50,000
+              </div>
 
-  const box=document.createElement("div");
-  box.className="quick";
+              <div class="product-info">
+                <strong>Sizes:</strong> M, L, XL, XXL<br>
+                <strong>Colours:</strong> Black, White, Navy, Brown
+              </div>
 
-  items.forEach(x=>{
+              <button
+                class="product-button"
+                onclick="selectProduct('Men’s Native Shirt & Trouser Set')">
+                Enquire About This
+              </button>
 
-    const b=document.createElement("button");
+            </div>
+          </article>
 
-    b.textContent=x;
 
-    b.onclick=()=>{
-      send(x);
-    };
+          <article class="product">
 
-    box.appendChild(b);
+            <div class="product-visual">
+              LV
+            </div>
 
-  });
+            <div class="product-content">
 
-  document.getElementById("chat").appendChild(box);
+              <div class="product-name">
+                Smart Casual Men's Shirt
+              </div>
 
-}
+              <div class="price">
+                ₦25,000
+              </div>
 
-function productCard(){
+              <div class="product-info">
+                <strong>Sizes:</strong> M, L, XL, XXL<br>
+                <strong>Colours:</strong> White, Black, Sky Blue, Wine
+              </div>
 
-  const box=document.createElement("div");
-  box.className="card";
+              <button
+                class="product-button"
+                onclick="selectProduct('Smart Casual Men’s Shirt')">
+                Enquire About This
+              </button>
 
-  box.innerHTML=`
-    <h3>${catalog.native.name}</h3>
-    <p class="price">Reference price: ₦50,000</p>
-    <p>${catalog.native.description}</p>
-    <p>Sizes: M, L, XL, XXL</p>
-    <p>Colours: Black, White, Navy, Brown</p>
-  `;
+            </div>
+          </article>
 
-  document.getElementById("chat").appendChild(box);
-}
+        </div>
+      </section>
 
-function send(text){
 
-  text=(text||"").trim();
+      <!-- CHAT -->
+      <section class="panel chat">
 
-  if(!text)return;
+        <div class="chat-header">
 
-  add(text,"user");
+          <div class="assistant-avatar">
+            AI
+          </div>
 
-  document.getElementById("input").value="";
+          <div>
+            <div class="assistant-name">
+              Lagos Vogue AI Sales Assistant
+            </div>
 
-  route(text);
-}
+            <div class="assistant-status">
+              ● Ready to assist
+            </div>
+          </div>
 
-function route(raw){
+        </div>
 
-  const t=raw.toLowerCase();
 
-  /*
-   STEP 1 — CUSTOMER TYPE
-  */
+        <div class="messages" id="messages">
 
-  if(!s.gender){
+          <div class="message-row">
+            <div class="message bot">
+              Welcome to <strong>Lagos Vogue</strong> 👋
 
-    if(
-      t.includes("men") ||
-      t.includes("man") ||
-      t.includes("male")
-    ){
-      s.gender="men";
-    }
+              I'm your AI Sales Assistant.
 
-    else if(
-      t.includes("women") ||
-      t.includes("woman") ||
-      t.includes("female")
-    ){
-      s.gender="women";
-    }
+              I can help you find the right outfit, check your preferred
+              style, understand your budget and prepare your enquiry for
+              our boutique team.
 
-    else{
+              What are you shopping for today?
+            </div>
+          </div>
 
-      add(
-        "Absolutely 😊 Is the outfit for a man or a woman?",
-        "bot"
-      );
+        </div>
 
-      quick(["Man","Woman"]);
 
-      return;
-    }
-  }
+        <div class="typing" id="typing">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
 
-  /*
-   WOMEN'S FLOW
-  */
 
-  if(s.gender==="women"){
+        <div class="quick-actions" id="quickActions">
 
-    add(
-      "Great 😊. Lagos Vogue can assist with women's fashion too. This demo catalogue is currently focused on selected men's pieces.\n\nTell me the occasion and your approximate budget, and the boutique team can recommend suitable options.",
-      "bot"
-    );
+          <button class="quick" onclick="quickMessage('I want to shop')">
+            🛍️ I want to shop
+          </button>
 
-    return;
-  }
+          <button class="quick" onclick="quickMessage('I need an outfit for an occasion')">
+            ✨ Occasion outfit
+          </button>
 
-  /*
-   STEP 2 — PRODUCT
-  */
+          <button class="quick" onclick="quickMessage('I want to know the prices')">
+            💰 View prices
+          </button>
 
-  if(!s.product){
+        </div>
 
-    const match=raw.match(/₦\s?([\d,]+)/);
 
-    if(match){
-      s.budget=parseInt(
-        match[1].replace(/,/g,"")
-      );
-    }else{
-      s.budget=50000;
-    }
+        <div id="leadCard" class="lead-card">
 
-    if(
-      t.includes("wedding") ||
-      t.includes("marriage")
-    ){
-      s.occasion="Wedding";
-    }
+          <div class="lead-title">
+            🎯 Qualified Sales Lead
+          </div>
 
-    else if(
-      t.includes("church") ||
-      t.includes("service")
-    ){
-      s.occasion="Church";
-    }
+          <div class="lead-grid">
 
-    else if(
-      t.includes("birthday")
-    ){
-      s.occasion="Birthday";
-    }
+            <div>
+              <strong>Name</strong>
+              <span id="leadName">—</span>
+            </div>
 
-    else if(
-      t.includes("office") ||
-      t.includes("work")
-    ){
-      s.occasion="Work";
-    }
+            <div>
+              <strong>Product</strong>
+              <span id="leadProduct">—</span>
+            </div>
 
-    else{
-      s.occasion="Special occasion";
-    }
+            <div>
+              <strong>Budget</strong>
+              <span id="leadBudget">—</span>
+            </div>
 
-    s.product=catalog.native;
+            <div>
+              <strong>Size</strong>
+              <span id="leadSize">—</span>
+            </div>
 
-    productCard();
+            <div>
+              <strong>Colour</strong>
+              <span id="leadColor">—</span>
+            </div>
 
-    add(
-      "For your request, the "+s.product.name+
-      " is currently listed at a reference price of ₦50,000.\n\n"+
-      "This is a demo catalogue price, not live inventory. The boutique team must confirm availability before purchase.\n\n"+
-      "What size do you normally wear?",
-      "bot"
-    );
+            <div>
+              <strong>Location</strong>
+              <span id="leadLocation">—</span>
+            </div>
 
-    quick(["M","L","XL","XXL"]);
+            <div>
+              <strong>Occasion</strong>
+              <span id="leadOccasion">—</span>
+            </div>
 
-    return;
-  }
+            <div>
+              <strong>Timeline</strong>
+              <span id="leadTimeline">—</span>
+            </div>
 
-  /*
-   STEP 3 — SIZE
-  */
+          </div>
 
-  if(!s.size){
+          <div class="lead-actions">
 
-    const size=["M","L","XL","XXL"]
-      .find(x=>
-        new RegExp("\\b"+x+"\\b","i").test(t)
-      );
+            <button
+              class="lead-action"
+              onclick="sendLead()">
+              Send Lead
+            </button>
 
-    if(size){
+            <button
+              class="lead-action secondary"
+              onclick="copyLead()">
+              Copy Lead
+            </button>
 
-      s.size=size.toUpperCase();
+          </div>
 
-      add(
-        "Noted 👍🏽. You selected size "+
-        s.size+
-        ". What colour would you prefer?",
-        "bot"
-      );
+        </div>
 
-      quick(s.product.colors);
 
-      return;
-    }
+        <div class="composer">
 
-    add(
-      "Please choose your usual size: M, L, XL or XXL.",
-      "bot"
-    );
+          <input
+            id="userInput"
+            type="text"
+            placeholder="Type your message..."
+            autocomplete="off"
+            onkeydown="handleEnter(event)"
+          >
 
-    quick(["M","L","XL","XXL"]);
+          <button
+            class="send"
+            onclick="sendMessage()">
+            ➤
+          </button>
 
-    return;
-  }
+        </div>
 
-  /*
-   STEP 4 — COLOUR
-  */
-
-  if(!s.color){
-
-    const c=s.product.colors.find(
-      x=>t.includes(x.toLowerCase())
-    );
-
-    if(c){
-
-      s.color=c;
-
-      add(
-        "Great choice 👍🏽. What is your name and location?\n\nFor example: Friday, Lagos.",
-        "bot"
-      );
-
-      return;
-    }
-
-    add(
-      "Which colour would you prefer?",
-      "bot"
-    );
-
-    quick(s.product.colors);
-
-    return;
-  }
-
-  /*
-   STEP 5 — NAME + LOCATION
-  */
-
-  if(!s.name){
-
-    const parts=raw.split(",");
-
-    if(parts.length>=2){
-
-      s.name=parts[0].trim();
-
-      s.location=parts
-        .slice(1)
-        .join(",")
-        .trim();
-
-      askTimeline();
-
-      return;
-    }
-
-    add(
-      "Please send your name and location in this format:\n\nFriday, Lagos",
-      "bot"
-    );
-
-    return;
-  }
-
-  /*
-   STEP 6 — TIMELINE
-  */
-
-  if(!s.timeline){
-
-    if(
-      t.includes("today") ||
-      t.includes("asap") ||
-      t.includes("urgent")
-    ){
-      s.timeline="ASAP";
-    }
-
-    else if(t.includes("week")){
-      s.timeline="This week";
-    }
-
-    else if(
-      t.includes("compare") ||
-      t.includes("just looking")
-    ){
-      s.timeline="Just comparing";
-    }
-
-    else{
-      s.timeline=raw;
-    }
-
-    add(
-      "Thanks, "+s.name+" 😊.\n\n"+
-      "I have your request. Would you like me to prepare it as a sales lead for the Lagos Vogue boutique team to confirm stock, delivery and payment details?",
-      "bot"
-    );
-
-    quick([
-      "Yes, pass it to the team",
-      "Not yet"
-    ]);
-
-    return;
-  }
-
-  /*
-   STEP 7 — SEND LEAD
-  */
-
-  if(
-    t.includes("yes") ||
-    t.includes("pass") ||
-    t.includes("send")
-  ){
-
-    showLead();
-
-  }
-
-  else{
-
-    add(
-      "No problem 👍🏽. I won't send the lead yet. You can continue asking questions, or choose 'Yes, pass it to the team' when you're ready.",
-      "bot"
-    );
-
-    quick([
-      "Yes, pass it to the team"
-    ]);
-  }
-}
-
-function askTimeline(){
-
-  add(
-    "Thanks 😊. When are you hoping to buy it?",
-    "bot"
-  );
-
-  quick([
-    "As soon as possible",
-    "This week",
-    "Just comparing"
-  ]);
-}
-
-function showLead(){
-
-  if(document.getElementById("lead"))return;
-
-  add(
-    "Perfect 😊 I've captured the request.\n\n"+
-    "The boutique team will need to confirm availability, any applicable discount, delivery to your location and approved payment details.",
-    "bot"
-  );
-
-  const lead=document.createElement("section");
-
-  lead.className="lead";
-  lead.id="lead";
-
-  lead.innerHTML=`
-
-    <h3>🔔 INTERNAL SALES LEAD</h3>
-
-    <p>
-      <span class="status">HOT LEAD</span>
-    </p>
-
-    <p>
-      <b>Customer:</b>
-      ${esc(s.name)}
-    </p>
-
-    <p>
-      <b>Product:</b>
-      ${esc(s.product.name)}
-    </p>
-
-    <p>
-      <b>Size:</b>
-      ${esc(s.size)}
-    </p>
-
-    <p>
-      <b>Colour:</b>
-      ${esc(s.color)}
-    </p>
-
-    <p>
-      <b>Budget:</b>
-      ₦${Number(s.budget||50000).toLocaleString()}
-    </p>
-
-    <p>
-      <b>Occasion:</b>
-      ${esc(s.occasion)}
-    </p>
-
-    <p>
-      <b>Location:</b>
-      ${esc(s.location)}
-    </p>
-
-    <p>
-      <b>Timeline:</b>
-      ${esc(s.timeline)}
-    </p>
-
-    <p>
-      <b>Intent:</b>
-      Ready to purchase / confirmation required
-    </p>
-
-    <p>
-      <b>Recommended action:</b>
-      Confirm ${esc(s.size)} availability, approved price or discount,
-      delivery options and official payment details.
-    </p>
-
-    <div class="actions">
-
-      <button
-        class="primary"
-        onclick="sendLead()">
-        📩 Send Lead to Boutique
-      </button>
-
-      <button
-        onclick="copyLead()">
-        Copy Lead
-      </button>
+      </section>
 
     </div>
 
-    <div id="leadStatus"></div>
+  </main>
 
-    <p style="font-size:10px;color:#777;margin-top:12px">
-      DEMO ONLY — sending currently simulates the sales workflow.
-      No real message is sent.
-    </p>
 
-  `;
+  <!-- TRUST -->
+  <section class="trust">
 
-  document
-    .getElementById("chat")
-    .appendChild(lead);
+    <div class="trust-grid">
 
-  window.scrollTo({
-    top:document.body.scrollHeight,
-    behavior:"smooth"
-  });
-}
+      <div class="trust-item">
+        <div class="trust-icon">🤖</div>
+        <strong>AI-Powered</strong>
+        <span>
+          Guides customers through a structured shopping conversation.
+        </span>
+      </div>
 
-function sendLead(){
+      <div class="trust-item">
+        <div class="trust-icon">🎯</div>
+        <strong>Lead Focused</strong>
+        <span>
+          Captures the information a boutique needs to follow up.
+        </span>
+      </div>
 
-  s.leadSent=true;
+      <div class="trust-item">
+        <div class="trust-icon">📱</div>
+        <strong>Built for Mobile</strong>
+        <span>
+          Designed for customers browsing from their phones.
+        </span>
+      </div>
 
-  document.getElementById("leadStatus").innerHTML=
-    '<div class="sent">✓ Lead sent to Lagos Vogue boutique team — simulated demo action</div>';
-}
+    </div>
 
-function copyLead(){
+  </section>
 
-  const txt=
-`NEW LAGOS VOGUE SALES LEAD
 
-Customer: ${s.name}
-Product: ${s.product.name}
-Size: ${s.size}
-Colour: ${s.color}
-Budget: ₦${Number(s.budget||50000).toLocaleString()}
-Occasion: ${s.occasion}
-Location: ${s.location}
-Timeline: ${s.timeline}
+  <footer>
+    <strong>Lagos Vogue AI Sales Assistant</strong><br>
+    Demo environment. Product prices and availability should be
+    confirmed by the Lagos Vogue boutique team.
+  </footer>
 
-ACTION:
-Confirm stock, approved price/discount, delivery and payment details.`;
+</div>
 
-  if(navigator.clipboard){
 
-    navigator.clipboard
-      .writeText(txt)
-      .then(()=>{
-        document.getElementById("leadStatus").innerHTML=
-          '<div class="sent">✓ Lead copied to clipboard</div>';
-      })
-      .catch(()=>{
-        document.getElementById("leadStatus").innerHTML=
-          '<div class="sent">✓ Lead prepared. Clipboard permission was unavailable.</div>';
-      });
+<script>
 
-  }else{
+  /* =========================================
+     PRODUCT CATALOG
+  ========================================= */
 
-    document.getElementById("leadStatus").innerHTML=
-      '<div class="sent">✓ Lead prepared for copying.</div>';
+  const products = {
+    native: {
+      name: "Men’s Native Shirt & Trouser Set",
+      price: "₦50,000",
+      sizes: ["M", "L", "XL", "XXL"],
+      colors: ["Black", "White", "Navy", "Brown"]
+    },
 
-  }
-}
-
-function esc(x){
-
-  return String(x||"")
-    .replace(
-      /[&<>"']/g,
-      m=>({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        "\"":"&quot;",
-        "'":"&#39;"
-      }[m])
-    );
-}
-
-function resetDemo(){
-
-  s={
-    gender:null,
-    product:null,
-    size:null,
-    color:null,
-    budget:null,
-    occasion:null,
-    name:null,
-    location:null,
-    timeline:null,
-    leadSent:false
+    shirt: {
+      name: "Smart Casual Men’s Shirt",
+      price: "₦25,000",
+      sizes: ["M", "L", "XL", "XXL"],
+      colors: ["White", "Black", "Sky Blue", "Wine"]
+    }
   };
 
-  document.getElementById("chat").innerHTML="";
 
-  add(
-    "Hello 😊 Welcome to Lagos Vogue.\n\n"+
-    "I'm your AI Sales Assistant. I can help you explore our catalogue, identify what you need, collect your purchase request and prepare a qualified sales lead for our boutique team.\n\n"+
-    "What are you shopping for?",
-    "bot"
-  );
+  /* =========================================
+     LEAD DATA
+  ========================================= */
 
-  quick([
-    "Men's outfit",
-    "Women's outfit",
-    "I need an outfit for a wedding"
-  ]);
-}
+  let lead = {
+    name: "",
+    product: "",
+    budget: "",
+    size: "",
+    color: "",
+    location: "",
+    occasion: "",
+    timeline: "",
+    contact: ""
+  };
 
-document.getElementById("send").onclick=()=>{
-  send(document.getElementById("input").value);
-};
+  let stage = "welcome";
 
-document
-  .getElementById("input")
-  .addEventListener("keydown",e=>{
 
-    if(e.key==="Enter" && !e.shiftKey){
+  /* =========================================
+     CHAT FUNCTIONS
+  ========================================= */
 
-      e.preventDefault();
+  function addMessage(text, sender = "bot") {
 
-      send(e.target.value);
+    const messages = document.getElementById("messages");
+
+    const row = document.createElement("div");
+
+    row.className = "message-row " + sender;
+
+    const bubble = document.createElement("div");
+
+    bubble.className = "message " + sender;
+
+    bubble.textContent = text;
+
+    row.appendChild(bubble);
+
+    messages.appendChild(row);
+
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+
+  function botReply(text, delay = 600) {
+
+    const typing = document.getElementById("typing");
+
+    typing.classList.add("show");
+
+    setTimeout(() => {
+
+      typing.classList.remove("show");
+
+      addMessage(text, "bot");
+
+    }, delay);
+  }
+
+
+  function quickMessage(text) {
+
+    document.getElementById("userInput").value = text;
+
+    sendMessage();
+  }
+
+
+  function handleEnter(event) {
+
+    if (event.key === "Enter") {
+      sendMessage();
     }
 
-  });
+  }
 
-resetDemo();
+
+  function sendMessage() {
+
+    const input = document.getElementById("userInput");
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    addMessage(text, "user");
+
+    input.value = "";
+
+    processMessage(text);
+
+  }
+
+
+  /* =========================================
+     PRODUCT BUTTON
+  ========================================= */
+
+  function selectProduct(productName) {
+
+    lead.product = productName;
+
+    addMessage(
+      "I'm interested in the " + productName,
+      "user"
+    );
+
+    botReply(
+      "Excellent choice. I'd be happy to help you with that.\n\n" +
+      "What is your approximate budget for this purchase?"
+    );
+
+    stage = "budget";
+  }
+
+
+  /* =========================================
+     AI-LIKE QUALIFICATION FLOW
+  ========================================= */
+
+  function processMessage(text) {
+
+    const lower = text.toLowerCase();
+
+
+    if (stage === "welcome") {
+
+      botReply(
+        "Great. We have two featured options:\n\n" +
+        "1. Men’s Native Shirt & Trouser Set — ₦50,000\n" +
+        "2. Smart Casual Men’s Shirt — ₦25,000\n\n" +
+        "Which one interests you?"
+      );
+
+      stage = "product";
+
+      return;
+    }
+
+
+    if (stage === "product") {
+
+      if (
+        lower.includes("native") ||
+        lower.includes("trouser") ||
+        lower.includes("50")
+      ) {
+        lead.product = products.native.name;
+
+      } else if (
+        lower.includes("shirt") ||
+        lower.includes("casual") ||
+        lower.includes("25")
+      ) {
+        lead.product = products.shirt.name;
+
+      } else {
+
+        lead.product = text;
+
+      }
+
+      botReply(
+        "Perfect. What budget range are you working with?"
+      );
+
+      stage = "budget";
+
+      return;
+    }
+
+
+    if (stage === "budget") {
+
+      lead.budget = text;
+
+      botReply(
+        "Thanks. What occasion are you buying the outfit for?\n\n" +
+        "For example: wedding, office, church, birthday, event, casual wear or personal use."
+      );
+
+      stage = "occasion";
+
+      return;
+    }
+
+
+    if (stage === "occasion") {
+
+      lead.occasion = text;
+
+      botReply(
+        "Nice. What size do you normally wear?\n\n" +
+        "Available sizes include M, L, XL and XXL."
+      );
+
+      stage = "size";
+
+      return;
+    }
+
+
+    if (stage === "size") {
+
+      lead.size = text.toUpperCase();
+
+      botReply(
+        "Got it. What colour would you prefer?"
+      );
+
+      stage = "color";
+
+      return;
+    }
+
+
+    if (stage === "color") {
+
+      lead.color = text;
+
+      botReply(
+        "Great choice. Which area are you located in?"
+      );
+
+      stage = "location";
+
+      return;
+    }
+
+
+    if (stage === "location") {
+
+      lead.location = text;
+
+      botReply(
+        "Thanks. When do you need the outfit?\n\n" +
+        "For example: today, this week, next week or a specific date."
+      );
+
+      stage = "timeline";
+
+      return;
+    }
+
+
+    if (stage === "timeline") {
+
+      lead.timeline = text;
+
+      botReply(
+        "Excellent. Finally, what is your name?"
+      );
+
+      stage = "name";
+
+      return;
+    }
+
+
+    if (stage === "name") {
+
+      lead.name = text;
+
+      botReply(
+        "Thank you, " + text + ".\n\n" +
+        "One last thing: what is the best phone number or WhatsApp contact for the boutique team to reach you?"
+      );
+
+      stage = "contact";
+
+      return;
+    }
+
+
+    if (stage === "contact") {
+
+      lead.contact = text;
+
+      showLead();
+
+      botReply(
+        "Perfect. Your enquiry has been captured.\n\n" +
+        "The boutique team can now review your requirements and follow up with you."
+      );
+
+      stage = "complete";
+
+      return;
+    }
+
+
+    if (stage === "complete") {
+
+      botReply(
+        "Your enquiry is already captured. The boutique team can follow up using the contact details you provided.\n\n" +
+        "You can also start another enquiry if you'd like."
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     SHOW LEAD
+  ========================================= */
+
+  function showLead() {
+
+    document.getElementById("leadName").textContent =
+      lead.name || "—";
+
+    document.getElementById("leadProduct").textContent =
+      lead.product || "—";
+
+    document.getElementById("leadBudget").textContent =
+      lead.budget || "—";
+
+    document.getElementById("leadSize").textContent =
+      lead.size || "—";
+
+    document.getElementById("leadColor").textContent =
+      lead.color || "—";
+
+    document.getElementById("leadLocation").textContent =
+      lead.location || "—";
+
+    document.getElementById("leadOccasion").textContent =
+      lead.occasion || "—";
+
+    document.getElementById("leadTimeline").textContent =
+      lead.timeline || "—";
+
+    document.getElementById("leadCard").classList.add("show");
+
+    document.getElementById("quickActions").style.display = "none";
+  }
+
+
+  /* =========================================
+     CREATE LEAD TEXT
+  ========================================= */
+
+  function buildLeadText() {
+
+    return (
+      "LAGOS VOGUE QUALIFIED SALES LEAD\n\n" +
+      "Name: " + lead.name + "\n" +
+      "Contact: " + lead.contact + "\n" +
+      "Product: " + lead.product + "\n" +
+      "Budget: " + lead.budget + "\n" +
+      "Size: " + lead.size + "\n" +
+      "Colour: " + lead.color + "\n" +
+      "Location: " + lead.location + "\n" +
+      "Occasion: " + lead.occasion + "\n" +
+      "Timeline: " + lead.timeline
+    );
+
+  }
+
+
+  /* =========================================
+     COPY LEAD
+  ========================================= */
+
+  function copyLead() {
+
+    const leadText = buildLeadText();
+
+    navigator.clipboard.writeText(leadText)
+      .then(() => {
+
+        alert("Lead copied successfully.");
+
+      })
+      .catch(() => {
+
+        alert(leadText);
+
+      });
+
+  }
+
+
+  /* =========================================
+     SEND LEAD — DEMO PLACEHOLDER
+  ========================================= */
+
+  function sendLead() {
+
+    /*
+      STEP 3 WILL REPLACE THIS FUNCTION.
+
+      We will connect this button to a real
+      webhook so qualified leads can automatically
+      reach the boutique by email / Google Sheets
+      / WhatsApp infrastructure.
+    */
+
+    alert(
+      "Demo lead captured successfully.\n\n" +
+      "The next upgrade will connect this button " +
+      "to real lead delivery."
+    );
+
+  }
 
 </script>
 
